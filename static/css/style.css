@@ -1,0 +1,399 @@
+:root {
+    --bg-dark: #090d16;
+    --card-bg: rgba(22, 31, 51, 0.75);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --primary-red: #e60000;
+    --primary-gold: #ffcc00;
+    --accent-blue: #0088ff;
+    --success-green: #00e676;
+    --warning-orange: #ff9100;
+    --danger-red: #ff3d00;
+    --text-primary: #ffffff;
+    --text-secondary: #94a3b8;
+    --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(230, 0, 0, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 136, 255, 0.1) 0%, transparent 40%);
+}
+
+header {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--primary-red), #990000);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(230, 0, 0, 0.4);
+}
+
+.brand-text h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.brand-text p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 0.55rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-red), #cc0000);
+    color: white;
+    box-shadow: 0 4px 12px rgba(230, 0, 0, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(230, 0, 0, 0.5);
+}
+
+.btn-outline {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr 340px;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    flex: 1;
+    max-width: 1700px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .main-layout {
+        grid-template-columns: 300px 1fr;
+    }
+    .right-sidebar {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 850px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    .right-sidebar {
+        grid-column: span 1;
+    }
+}
+
+.card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Left Panel Checklist */
+.checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checklist-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.checklist-item.passed {
+    border-color: rgba(0, 230, 118, 0.4);
+    background: rgba(0, 230, 118, 0.08);
+}
+
+.checklist-item.missing {
+    border-color: rgba(255, 204, 0, 0.2);
+}
+
+.item-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.item-value {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.badge-pending { background: rgba(255, 204, 0, 0.2); color: var(--primary-gold); }
+.badge-passed { background: rgba(0, 230, 118, 0.2); color: var(--success-green); }
+.badge-disqualified { background: rgba(255, 61, 0, 0.2); color: var(--danger-red); }
+.badge-transfer { background: rgba(0, 136, 255, 0.2); color: var(--accent-blue); }
+
+/* Status Box */
+.status-box {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.status-title {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.status-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Chat Center Panel */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 680px;
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.message {
+    max-width: 80%;
+    padding: 0.9rem 1.1rem;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    position: relative;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--accent-blue), #0055cc);
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-bottom-left-radius: 2px;
+}
+
+.message-sender {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.chat-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.chat-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.chat-input:focus {
+    border-color: var(--accent-blue);
+}
+
+/* Quick Scenarios */
+.scenarios {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chip:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-gold);
+}
+
+/* Modal for Test Matrix Results */
+.modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.test-grid {
+    overflow-y: auto;
+    display: grid;
+    gap: 10px;
+}
+
+.test-item {
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.test-item.passed { border-left: 4px solid var(--success-green); }
+.test-item.failed { border-left: 4px solid var(--danger-red); }
