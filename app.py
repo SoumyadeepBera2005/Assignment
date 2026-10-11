@@ -8,6 +8,7 @@ from typing import Dict, Any, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from agent.conversational_agent import ConversationalAgent
@@ -18,6 +19,15 @@ app = FastAPI(
     title="Home Credit AI Voice Agent",
     description="Pre-approved Loan Against Property (LAP) Voice Agent Server",
     version="1.0.0"
+)
+
+# Enable CORS for external frontends (e.g., Vercel, localhost)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Mount Static Files
@@ -44,6 +54,10 @@ class ResetRequest(BaseModel):
 # Web Dashboard Route
 @app.get("/", response_class=HTMLResponse)
 async def serve_dashboard():
+    root_index = os.path.join(base_dir, "index.html")
+    if os.path.exists(root_index):
+        with open(root_index, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
     index_path = os.path.join(static_dir, "index.html")
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as f:
@@ -128,4 +142,6 @@ async def run_tests_endpoint():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    host = os.environ.get("HOST", "0.0.0.0")
+    uvicorn.run("app:app", host=host, port=port, reload=True)

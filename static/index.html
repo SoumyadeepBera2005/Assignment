@@ -20,6 +20,7 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn btn-outline" id="backend-btn" onclick="openBackendModal()">⚙️ Backend: <span id="backend-status-indicator">Auto</span></button>
             <button class="btn btn-outline" onclick="runTestMatrix()">🧪 Run Test Matrix (16 Tests)</button>
             <button class="btn btn-primary" onclick="resetConversation()">🔄 Reset Session</button>
         </div>
@@ -174,6 +175,29 @@
             </div>
             <div class="test-grid" id="test-grid">
                 <!-- Test items injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- BACKEND CONFIG MODAL -->
+    <div class="modal" id="backend-modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>⚙️ Connect Render Backend</h2>
+                <button class="close-btn" onclick="closeBackendModal()">&times;</button>
+            </div>
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+                Enter your live Render backend URL (e.g. <code>https://home-credit-voice-agent.onrender.com</code>).<br>
+                Leave empty if running locally or on the same origin.
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.8rem; margin-bottom: 6px; color: var(--primary-gold); font-weight: 600;">Render Backend API URL</label>
+                <input type="text" id="backend-url-input" class="chat-input" style="width: 100%; box-sizing: border-box;" placeholder="https://your-service.onrender.com">
+            </div>
+            <div id="backend-test-status" style="margin-bottom: 1rem; font-size: 0.85rem; min-height: 20px;"></div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-outline" onclick="testBackendConnection()">⚡ Test Connection</button>
+                <button class="btn btn-primary" onclick="saveBackendUrl()">Save</button>
             </div>
         </div>
     </div>

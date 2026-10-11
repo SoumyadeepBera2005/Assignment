@@ -1,3 +1,8 @@
+function getApiBaseUrl() {
+    const custom = window.API_BASE_URL || localStorage.getItem('API_BASE_URL') || '';
+    return custom.trim().replace(/\/+$/, '');
+}
+
 let currentSessionId = "session_" + Math.random().toString(36).substring(2, 9);
 let isRecognizing = false;
 let recognition = null;
@@ -65,7 +70,8 @@ async function sendMessage() {
     appendMessage('user', 'Customer', utterance);
 
     try {
-        const response = await fetch('/api/chat', {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -73,6 +79,10 @@ async function sendMessage() {
                 customer_utterance: utterance
             })
         });
+
+        if (!response.ok) {
+            throw new Error(`Server returned status ${response.status}`);
+        }
 
         const data = await response.json();
 
@@ -92,6 +102,7 @@ async function sendMessage() {
 
     } catch (err) {
         console.error("Error sending message:", err);
+        appendMessage('assistant', 'System Notice', '⚠️ Cannot reach the backend API. If you deployed the frontend on Vercel, click "⚙️ Backend" in the header to enter your Render service URL (e.g. https://your-service.onrender.com).');
     }
 }
 
@@ -183,7 +194,8 @@ function updateCheckitem(id, value) {
 
 async function resetConversation() {
     try {
-        await fetch('/api/reset', {
+        const baseUrl = getApiBaseUrl();
+        await fetch(`${baseUrl}/api/reset`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ session_id: currentSessionId })
@@ -223,7 +235,8 @@ async function runTestMatrix() {
     grid.innerHTML = '<div style="color: var(--text-secondary);">Executing tests...</div>';
 
     try {
-        const response = await fetch('/api/run-tests', { method: 'POST' });
+        const baseUrl = getApiBaseUrl();
+        const response = await fetch(`${baseUrl}/api/run-tests`, { method: 'POST' });
         const data = await response.json();
 
         summary.innerHTML = `
@@ -256,3 +269,63 @@ async function runTestMatrix() {
 function closeTestModal() {
     document.getElementById('test-modal').style.display = 'none';
 }
+
+// Backend Configuration Controls
+function openBackendModal() {
+    const modal = document.getElementById('backend-modal');
+    if (!modal) return;
+    const input = document.getElementById('backend-url-input');
+    if (input) input.value = localStorage.getItem('API_BASE_URL') || '';
+    const status = document.getElementById('backend-test-status');
+    if (status) status.innerHTML = '';
+    modal.style.display = 'flex';
+}
+
+function closeBackendModal() {
+    const modal = document.getElementById('backend-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function testBackendConnection() {
+    const input = document.getElementById('backend-url-input');
+    const status = document.getElementById('backend-test-status');
+    const url = (input ? input.value : '').trim().replace(/\/+$/, '');
+    status.innerHTML = '<span style="color: var(--primary-gold);">⏳ Testing connection to ' + (url || 'current host') + '...</span>';
+    try {
+        const testEndpoint = url ? `${url}/api/state` : '/api/state';
+        const res = await fetch(testEndpoint, { method: 'GET' });
+        if (res.ok) {
+            status.innerHTML = '<span style="color: var(--success-green);">✅ Backend online and responded successfully!</span>';
+        } else {
+            status.innerHTML = `<span style="color: var(--danger-red);">❌ Server responded with HTTP status ${res.status}.</span>`;
+        }
+    } catch (e) {
+        status.innerHTML = '<span style="color: var(--danger-red);">❌ Connection failed. Verify that your Render service is "Live" and the URL is correct.</span>';
+    }
+}
+
+function saveBackendUrl() {
+    const input = document.getElementById('backend-url-input');
+    const url = (input ? input.value : '').trim().replace(/\/+$/, '');
+    localStorage.setItem('API_BASE_URL', url);
+    updateBackendBadge();
+    closeBackendModal();
+}
+
+function updateBackendBadge() {
+    const badge = document.getElementById('backend-status-indicator');
+    if (!badge) return;
+    const current = localStorage.getItem('API_BASE_URL');
+    if (current) {
+        badge.innerText = 'Connected';
+        badge.style.color = 'var(--success-green)';
+    } else {
+        badge.innerText = 'Auto / Local';
+        badge.style.color = 'var(--text-secondary)';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    updateBackendBadge();
+});
+

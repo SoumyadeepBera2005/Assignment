@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Credit AI Voice Agent — Interactive Simulator & Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-icon">HC</div>
+            <div class="brand-text">
+                <h1>Home Credit AI Voice Agent</h1>
+                <p>Pre-approved LAP Offer (₹75 Lakh Max Limit)</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline" id="backend-btn" onclick="openBackendModal()">⚙️ Backend: <span id="backend-status-indicator">Auto</span></button>
+            <button class="btn btn-outline" onclick="runTestMatrix()">🧪 Run Test Matrix (16 Tests)</button>
+            <button class="btn btn-primary" onclick="resetConversation()">🔄 Reset Session</button>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        
+        <!-- LEFT PANEL: 7-POINT ELIGIBILITY CHECKLIST -->
+        <aside class="card">
+            <div class="card-title">
+                <span>7 Eligibility Data Points</span>
+                <span id="completion-counter" class="badge badge-pending">0 / 7</span>
+            </div>
+
+            <div class="checklist">
+                <div class="checklist-item" id="item-property_type">
+                    <div>
+                        <div class="item-label">1. Property Type</div>
+                        <div class="item-value" id="val-property_type">Residential / Commercial / Industrial</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-property_type">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-ownership">
+                    <div>
+                        <div class="item-label">2. Ownership Status</div>
+                        <div class="item-value" id="val-ownership">Sole or Joint</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-ownership">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-documents">
+                    <div>
+                        <div class="item-label">3. Original Documents</div>
+                        <div class="item-value" id="val-documents">Original papers required</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-documents">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-loan_amount">
+                    <div>
+                        <div class="item-label">4. Loan Amount</div>
+                        <div class="item-value" id="val-loan_amount">Max ₹75,00,000 (75 Lakh)</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-loan_amount">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-occupation_and_income">
+                    <div>
+                        <div class="item-label">5. Occupation + Income</div>
+                        <div class="item-value" id="val-occupation_and_income">Salaried/Self-employed (Bank)</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-occupation_and_income">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-market_value">
+                    <div>
+                        <div class="item-label">6. Market Value</div>
+                        <div class="item-value" id="val-market_value">Approx property value</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-market_value">Pending</span>
+                </div>
+
+                <div class="checklist-item" id="item-tenure">
+                    <div>
+                        <div class="item-label">7. Tenure</div>
+                        <div class="item-value" id="val-tenure">3 to 15 Years allowed</div>
+                    </div>
+                    <span class="badge badge-pending" id="badge-tenure">Pending</span>
+                </div>
+            </div>
+
+            <div class="status-box">
+                <div class="status-title">Current Flow Status</div>
+                <div class="status-value" id="flow-status" style="color: var(--primary-gold);">IN PROGRESS</div>
+            </div>
+        </aside>
+
+        <!-- CENTER PANEL: CHAT SIMULATION SANDBOX -->
+        <section class="card chat-container">
+            <div class="card-title">
+                <span>🎙️ Voice Agent Sandbox Simulation</span>
+                <span style="font-size: 0.75rem; color: var(--success-green); font-weight: normal;">● Online (TTS / STT Ready)</span>
+            </div>
+
+            <div class="chat-history" id="chat-history">
+                <div class="message assistant">
+                    <div class="message-sender">Priya (AI Voice Agent)</div>
+                    Hello! I am Priya calling from Home Credit regarding your pre-approved Loan Against Property offer of up to ₹75 Lakh. Do you have a couple of minutes to discuss?
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 6px;">⚡ Quick Test Scenarios (Click to send):</div>
+                <div class="scenarios">
+                    <span class="chip" onclick="sendQuick('Hi, I own a residential house.')">Residential House</span>
+                    <span class="chip" onclick="sendQuick('It is jointly owned with my wife.')">Joint Ownership</span>
+                    <span class="chip" onclick="sendQuick('Yes, original documents are available.')">Original Papers</span>
+                    <span class="chip" onclick="sendQuick('I need ₹40 lakh loan.')">₹40 Lakh Loan</span>
+                    <span class="chip" onclick="sendQuick('I am salaried and income comes in bank.')">Salaried (Bank)</span>
+                    <span class="chip" onclick="sendQuick('Market value is around ₹80 lakh.')">Market Value ₹80L</span>
+                    <span class="chip" onclick="sendQuick('I want 10 years tenure.')">10 Years Tenure</span>
+                    <span class="chip" onclick="sendQuick('I have an agricultural farmland.')">🚫 Agri Property</span>
+                    <span class="chip" onclick="sendQuick('I receive my income in cash.')">🚫 Cash Income</span>
+                    <span class="chip" onclick="sendQuick('I already have a loan on this property.')">🔄 Balance Transfer</span>
+                    <span class="chip" onclick="sendQuick('I am busy right now, call me tomorrow at 5 PM.')">📅 Busy Customer</span>
+                </div>
+            </div>
+
+            <div class="chat-controls">
+                <input type="text" id="user-input" class="chat-input" placeholder="Type your response or click mic to speak..." onkeypress="handleKeyPress(event)">
+                <button class="btn btn-outline" id="mic-btn" onclick="toggleMic()" title="Voice Input (STT)">🎙️</button>
+                <button class="btn btn-primary" onclick="sendMessage()">Send ➔</button>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL: RAG INSPECTOR & SYSTEM PROMPT VIEWER -->
+        <aside class="card">
+            <div class="card-title">RAG Context & System Inspector</div>
+
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 1rem; overflow-y: auto;">
+                <div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px;">Active RAG Knowledge Snippet</div>
+                    <div id="rag-inspector" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; line-height: 1.4; color: var(--text-secondary); max-height: 250px; overflow-y: auto;">
+                        No product RAG query triggered yet. Ask about interest rates, processing fees, or document requirements to see live RAG retrieval!
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-gold); margin-bottom: 4px;">Dynamic System Prompt Variables</div>
+                    <div id="prompt-inspector" style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-size: 0.75rem; font-family: monospace; color: #cbd5e1; max-height: 250px; overflow-y: auto;">
+                        Agent: Priya (Female)<br>
+                        Company: Home Credit<br>
+                        Max Limit: ₹75,00,000<br>
+                        Handoff Gate: Locked (Requires 7/7 points)
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- TEST MATRIX MODAL -->
+    <div class="modal" id="test-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧪 Automated Test Matrix Results (16 Scenarios)</h2>
+                <button class="close-btn" onclick="closeTestModal()">&times;</button>
+            </div>
+            <div style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-secondary);" id="test-summary">
+                Executing test suite...
+            </div>
+            <div class="test-grid" id="test-grid">
+                <!-- Test items injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- BACKEND CONFIG MODAL -->
+    <div class="modal" id="backend-modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2>⚙️ Connect Render Backend</h2>
+                <button class="close-btn" onclick="closeBackendModal()">&times;</button>
+            </div>
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+                Enter your live Render backend URL (e.g. <code>https://home-credit-voice-agent.onrender.com</code>).<br>
+                Leave empty if running locally or on the same origin.
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.8rem; margin-bottom: 6px; color: var(--primary-gold); font-weight: 600;">Render Backend API URL</label>
+                <input type="text" id="backend-url-input" class="chat-input" style="width: 100%; box-sizing: border-box;" placeholder="https://your-service.onrender.com">
+            </div>
+            <div id="backend-test-status" style="margin-bottom: 1rem; font-size: 0.85rem; min-height: 20px;"></div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-outline" onclick="testBackendConnection()">⚡ Test Connection</button>
+                <button class="btn btn-primary" onclick="saveBackendUrl()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
